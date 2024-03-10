@@ -1,0 +1,67 @@
+{
+  "groups": [
+    {
+      "name": "config-frequency",
+      "type": "searchengine.model.repositories.RepositoryLemma",
+      "sourceType": "searchengine.model.repositories.RepositoryLemma"
+    },
+    {
+      "name": "indexing-settings",
+      "type": "searchengine.config.SitesListCfg",
+      "sourceType": "searchengine.config.SitesListCfg"
+    },
+    {
+      "name": "search-settings",
+      "type": "searchengine.config.SearchCfg",
+      "sourceType": "searchengine.config.SearchCfg"
+    }
+  ],
+  "properties": [
+    {
+      "name": "indexing-settings.content-type",
+      "type": "java.lang.String",
+      "sourceType": "searchengine.config.SitesListCfg"
+    },
+    {
+      "name": "indexing-settings.name",
+      "type": "java.lang.String",
+      "sourceType": "searchengine.config.SitesListCfg"
+    },
+    {
+      "name": "indexing-settings.referer",
+      "type": "java.lang.String",
+      "sourceType": "searchengine.config.SitesListCfg"
+    },
+    {
+      "name": "indexing-settings.sites",
+      "type": "java.util.List<searchengine.config.SiteCfg>",
+      "sourceType": "searchengine.config.SitesListCfg"
+    },
+    {
+      "name": "indexing-settings.timeout",
+      "type": "java.lang.Integer",
+      "sourceType": "searchengine.config.SitesListCfg"
+    },
+    {
+      "name": "search-settings.limit",
+      "type": "java.lang.Integer",
+      "sourceType": "searchengine.config.SearchCfg"
+    },
+    {
+      "name": "search-settings.offset",
+      "type": "java.lang.Integer",
+      "sourceType": "searchengine.config.SearchCfg"
+    },
+    {
+      "name": "search-settings.query",
+      "type": "java.lang.String",
+      "sourceType": "searchengine.config.SearchCfg"
+    },
+    {
+      "name": "search-settings.site",
+      "type": "java.lang.String",
+      "sourceType": "searchengine.config.SearchCfg"
+    }
+  ],
+  "hints": []
+}
