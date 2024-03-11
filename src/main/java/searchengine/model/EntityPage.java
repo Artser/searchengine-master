@@ -25,8 +25,8 @@ public class EntityPage {
     private String path;
     @Column(nullable = false)
     private Integer code;
-    //@Column(columnDefinition = "MEDIUMTEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci", nullable = false)
-    @Column(columnDefinition = "MEDIUMTEXT SET utf8mb4 COLLATE utf8mb4_general_ci", nullable = false)
+    @Column(columnDefinition = "MEDIUMTEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci", nullable = false)
+    //@Column(columnDefinition = "MEDIUMTEXT SET utf8mb4 COLLATE utf8mb4_general_ci", nullable = false)
     private String content;
 
 }
