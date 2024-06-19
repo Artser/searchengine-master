@@ -38,6 +38,7 @@ public class MorphologyAnalyzer implements Morphology {
                 int count = lemmaList.getOrDefault(word, 0);
                 lemmaList.put(word, count + 1);
             }
+            System.out.println();
         }
         return lemmaList;
     }
@@ -77,6 +78,7 @@ public class MorphologyAnalyzer implements Morphology {
     private boolean isServiceWord(String word) {
         List<String> morphForm = russianMorph.getMorphInfo(word);
         for (String l : morphForm) {
+            //System.out.println(l);
             if (l.contains("ПРЕДЛ")
                     || l.contains("СОЮЗ")
                     || l.contains("МЕЖД")
@@ -86,6 +88,7 @@ public class MorphologyAnalyzer implements Morphology {
                 return true;
             }
         }
+        System.err.println();
         return false;
     }
 }

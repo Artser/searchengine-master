@@ -11,15 +11,15 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
     hibernate:
-        ddl-auto: update
+        ddl-auto: create
     show-sql: true
 
 indexing-settings:
   sites:
     - url: http://strana-oliviya.tilda.ws/
       name: Strana-Oliviya
-    - url: https://residentrf.ru/
-      name: ResidentRF
+    - url: https://playback.ru
+      name: playback.ru
 
   name: SearchBotFix/2.0
   referer: https://google.com

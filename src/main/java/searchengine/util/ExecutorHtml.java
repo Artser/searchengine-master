@@ -94,13 +94,16 @@ public class ExecutorHtml extends RecursiveAction {
             Future<?> submit = executorService.submit(new StartLemmaFind(entitySite, entityPage,
                                                                          repositoryIndex, repositoryLemma));
             submit.get();
-
+            try {
+                Thread.sleep(10000);
+            } catch (InterruptedException ex) {
+            }
             log.info("Добавлена запись " + url + " " + Thread.currentThread());
 
             Elements elements = document.select("a");
             for (Element element : elements) {
                 String absUrl = element.absUrl("href").
-                        indexOf(0) == '/' ? entitySite.getUrl() + element.absUrl("href") :
+                        indexOf('/') == 0 ? entitySite.getUrl() + element.absUrl("href") :
                         element.absUrl("href");
 
                 if (!absUrl.isEmpty()
