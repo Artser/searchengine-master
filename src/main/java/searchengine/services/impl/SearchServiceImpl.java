@@ -34,6 +34,13 @@ public class SearchServiceImpl implements SearchService {
     private final RepositorySite siteRepository;
     private final static int newFixedThreadPool = Runtime.getRuntime().availableProcessors();
 
+    private int count;
+
+    @Override
+    public int getCount() {
+        return count;
+    }
+
     @SneakyThrows
     @Override
     public List<SearchDto> allSiteSearch(SearchCfg searchCfg) {
@@ -47,12 +54,12 @@ public class SearchServiceImpl implements SearchService {
                 continue;
             }
             log.info("Поисковый запрос сайта " + entitySite.getName() + " обработан. Ответ получен.");
-            entityPageFloatHashMap.putAll(getPageList(foundLemmaList, entitySite, searchCfg.getLimit()));
+            entityPageFloatHashMap.putAll(getPageList(foundLemmaList, entitySite));
         }
         if (entityPageFloatHashMap.isEmpty()) {
             return new ArrayList<>();
         }
-        HashMap<EntityPage, Float> resultMap = getResultMap(entityPageFloatHashMap, searchCfg.getLimit());
+        HashMap<EntityPage, Float> resultMap = getResultMap(entityPageFloatHashMap, searchCfg.getOffset(), searchCfg.getLimit());
         return getSearchDto(resultMap, lemmaSet);
     }
 
@@ -67,8 +74,8 @@ public class SearchServiceImpl implements SearchService {
             return new ArrayList<>();
         }
         log.info("Поисковый запрос обработан. Ответ получен.");
-        HashMap<EntityPage, Float> pageFloatHashMap = getPageList(foundLemmaList, site, searchCfg.getLimit());
-        HashMap<EntityPage, Float> resultMap = getResultMap(pageFloatHashMap, searchCfg.getLimit());
+        HashMap<EntityPage, Float> pageFloatHashMap = getPageList(foundLemmaList, site);
+        HashMap<EntityPage, Float> resultMap = getResultMap(pageFloatHashMap, searchCfg.getOffset(), searchCfg.getLimit());
         if (pageFloatHashMap.isEmpty()) {
             return new ArrayList<>();
         }
@@ -91,8 +98,7 @@ public class SearchServiceImpl implements SearchService {
         return resultList;
     }
 
-    private HashMap<EntityPage, Float> getPageList(List<EntityLemma> entityLemmas,
-                                                   EntitySite entitySite, Integer limit) {
+    private HashMap<EntityPage, Float> getPageList(List<EntityLemma> entityLemmas, EntitySite entitySite) {
         HashMap<EntityPage, Float> resultMap = new HashMap<>();
         String firstLemma = entityLemmas.stream().findFirst().get().getLemma();
         CopyOnWriteArrayList<EntityPage> entityPages = pageRepository.findByLemma(firstLemma, entitySite);
@@ -104,7 +110,7 @@ public class SearchServiceImpl implements SearchService {
                     EntityIndex entityIndex = indexRepository.findByPageAndLemma(entityPage, entityLemmas.get(0));
                     resultMap.put(entityPage, entityIndex.getRank());
                 }
-                return getSortedMap(resultMap, limit);
+                return getSortedMap(resultMap);
             }
             List<EntityIndex> entityIndices = indexRepository.findByPagesAndLemmas(entityLemmas, entityPages);
             Map<EntityPage, EntityIndex> collect1 = new HashMap<>();
@@ -126,26 +132,29 @@ public class SearchServiceImpl implements SearchService {
                     }
                 }
             }
-            return getSortedMap(resultMap, limit);
+            return getSortedMap(resultMap);
         }
 
     }
 
-    private HashMap<EntityPage, Float> getSortedMap(HashMap<EntityPage, Float> resultMap, Integer limit) {
+    private HashMap<EntityPage, Float> getSortedMap(HashMap<EntityPage, Float> resultMap) {
         return resultMap.entrySet().stream()
                 .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
-                .limit(limit).collect(Collectors.toMap(
+                .collect(Collectors.toMap(
                         Map.Entry::getKey,
                         Map.Entry::getValue,
                         (a, b) -> a, LinkedHashMap::new));
     }
 
-    private HashMap<EntityPage, Float> getResultMap(HashMap<EntityPage, Float> map, Integer limit) {
+    private HashMap<EntityPage, Float> getResultMap(HashMap<EntityPage, Float> map, Integer offset, Integer limit) {
         Float maxRank = map.entrySet().stream().findFirst().get().getValue();
         map.replaceAll((k, v) -> v / maxRank);
+        count = map.entrySet().size();
         return map.entrySet().stream()
                 .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
-                .limit(limit).collect(Collectors.toMap(
+                .skip(offset)
+                .limit(limit)
+                .collect(Collectors.toMap(
                         Map.Entry::getKey,
                         Map.Entry::getValue,
                         (a, b) -> a, LinkedHashMap::new));

@@ -53,11 +53,13 @@ public class ApiController {
 
     @GetMapping("/search")
     public ResponseEntity<?> search(SearchCfg site) {
+        System.out.println("offset from front: " + site.getOffset());
         List<SearchDto> listSearchDto = site.getSite() == null ?
                 searchService.allSiteSearch(site) :
                 searchService.siteSearch(site);
+        System.out.println("count from back: " + listSearchDto.size());
         return ResponseEntity.ok(listSearchDto.isEmpty() ?
                 new FalseResponse(false, "Поисковый запрос не найден или введен не верно") :
-                new SearchResponse(true,listSearchDto.size(),listSearchDto));
+                new SearchResponse(true,searchService.getCount(),listSearchDto));
     }
 }
